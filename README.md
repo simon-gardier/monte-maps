@@ -12,28 +12,31 @@ MonteMaps is a [Google Maps](https://fr.wikipedia.org/wiki/Google_Maps)-like sof
 The data created for this project (point cloud, mapping images, descriptors) can be obtained on [HuggingFace](https://huggingface.co/datasets/simon-gardier/monte-maps).
 
 ## Initial installation
-1. Download the submodules:
+1. **Download the submodules**
 ```bash
 git submodule update --init --recursive
 ```
 
-2. Download the env:
+2. **Download env**
 ```bash
 uv sync
 ```
 
-3. Hugging face
+3. **Hugging face**
+
 If needed:
 ```bash
 uv pip install huggingface_hub
 hf auth login
 ```
 
-4. Data
-Project data (images, descriptors, camera poses,...) is hosted on HuggingFace [monte-maps](https://huggingface.co/datasets/simon-gardier/monte-maps/tree/main).
+4. **Data**
 
-5. .env file setup
-Copy `template.env` in a `.env` file, fill in the variables for the sections you are interested in (e.g if you want to test the realtime result, *Real Time localization* and *Global* need to be filled in).
+Download the project data (images, descriptors, camera poses,...) hosted on HuggingFace [monte-maps](https://huggingface.co/datasets/simon-gardier/monte-maps/tree/main).
+
+5. **.env setup**
+
+Copy `template.env` in a `.env` file, fill in the variables for the sections you are interested in (e.g if you want to test the realtime result, *Real Time localization* and *Global* sections need to be filled in).
 
 **Note:** You need to download corresponding data from the [HuggingFace dataset]((https://huggingface.co/datasets/simon-gardier/monte-maps/tree/main)) and point env path variables to download location.
 

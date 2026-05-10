@@ -68,6 +68,7 @@ class Renderer:
                 f"/places/{camera_id}",
                 text=label_title,
                 position=tuple(label_position),
+                anchor="center-center"
             )
 
         with open(marker_moel_path, "rb") as glb_file:

@@ -94,6 +94,10 @@ class Localizer:
         self.last_accepted_time = None
         self.kalman_filter = None
 
+        self.localize_total_time_seconds = 0.0
+        self.localize_call_count = 0
+        self.localize_last_print_time = None
+
     def run(self, frame_queue, renderer):
         while True:
             frame = frame_queue.get()
@@ -114,6 +118,21 @@ class Localizer:
 
     def localize(self, frame_bgr):
         """Returns a Kalman-filtered 3D position (x, y, z) or None during initialization."""
+        localize_start_time = time.monotonic()
+        result = self._localize(frame_bgr)
+        self.localize_total_time_seconds += time.monotonic() - localize_start_time
+        self.localize_call_count += 1
+        if self.localize_last_print_time is None:
+            self.localize_last_print_time = localize_start_time
+        elif localize_start_time - self.localize_last_print_time >= 1.0:
+            average_localize_time_ms = (self.localize_total_time_seconds / self.localize_call_count) * 1000
+            print(f"localize() average time: {average_localize_time_ms:.1f}ms / localize() call")
+            self.localize_total_time_seconds = 0.0
+            self.localize_call_count = 0
+            self.localize_last_print_time = localize_start_time
+        return result
+
+    def _localize(self, frame_bgr):
         current_time = time.monotonic()
         top1_index = self.retrieve_top1_index_from_frame(frame_bgr)
         candidate_position = self.index_to_position[top1_index]

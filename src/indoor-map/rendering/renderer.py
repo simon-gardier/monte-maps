@@ -44,9 +44,12 @@ class Renderer:
                     TitlebarButton(
                         text="GitHub", icon="GitHub", href="https://github.com/simon-gardier/indoor-map"
                     ),
+                    TitlebarButton(
+                        text="Hugging Face", icon="Description", href="https://huggingface.co/datasets/simon-gardier/monte-maps/tree/main"
+                    )
                 ),
             ),
-            dark_mode=True,
+            dark_mode=False,
         )
         self.server.scene.set_up_direction("-y")
         self.server.scene.add_point_cloud(

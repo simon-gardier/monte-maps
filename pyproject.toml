@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+name = "indoor-map"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+dependencies = [
+    "faiss-cpu>=1.13.2",
+    "filterpy>=1.4.5",
+    "heic2png>=1.2.0",
+    "huggingface-hub>=1.14.0",
+    "ipykernel>=7.2.0",
+    "ipython>=9.13.0",
+    "ipywidgets>=8.1.8",
+    "jupyter>=1.1.1",
+    "lightglue",
+    "load-dotenv>=0.1.0",
+    "matplotlib>=3.10.9",
+    "nbconvert>=7.17.1",
+    "nbformat>=5.10.4",
+    "numpy>=2.4.4",
+    "opencv-python>=4.13.0.92",
+    "pandas>=3.0.2",
+    "pillow>=12.2.0",
+    "plotly>=6.7.0",
+    "pycolmap>=4.0.4",
+    "rich>=14.3.4",
+    "ruff>=0.15.12",
+    "safetensors>=0.7.0",
+    "scikit-learn>=1.8.0",
+    "seaborn>=0.13.2",
+    "torch>=2.11.0",
+    "torchvision>=0.26.0",
+    "tqdm>=4.67.3",
+    "trimesh>=4.12.2",
+    "viser>=1.0.27",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.uv.sources]
+lightglue = { git = "https://github.com/cvg/LightGlue.git" }
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.2.0",
+]

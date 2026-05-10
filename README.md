@@ -42,9 +42,6 @@ Copy `template.env` in a `.env` file, fill in the variables for the sections you
 
 ## Reconstruction
 
-### Feed Forward approach
-Follow install instructions at: https://github.com/ByteDance-Seed/Depth-Anything-3/tree/main/da3_streaming
-
 ### COLMAP
 #### Downloads
 1. Download COLMAP GUI from: https://github.com/colmap/colmap/releases/tag/4.0.4

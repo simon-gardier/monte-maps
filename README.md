@@ -8,6 +8,8 @@ U|' \/ '|u   \/"_ \/ | \ |"|   |_ " _| \| ___"|/    U|' \/ '|uU  /"\  u U|  _"\ 
  (./  \.)     (__)   (_")  (_/(__) (__)(__) (__)     (./  \.) (__)  (__)(__)__)   (__)      
 ```
 
+https://github.com/user-attachments/assets/3c1a2c6b-95ce-45ae-91c1-aee83f7ff574
+
 MonteMaps is a [Google Maps](https://fr.wikipedia.org/wiki/Google_Maps)-like software that allows the user to localize themselves in the [Montefiore Institute](https://www.montefiore.uliege.be/cms/c_3482888/en/montefiore-institute) (ULiege) using a off-the-self camera.
 The data created for this project (point cloud, mapping images, descriptors) can be obtained on [HuggingFace](https://huggingface.co/datasets/simon-gardier/monte-maps).
 

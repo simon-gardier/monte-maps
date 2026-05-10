@@ -94,6 +94,16 @@ class Localizer:
         self.last_accepted_time = None
         self.kalman_filter = None
 
+    def run(self, frame_queue, renderer):
+        while True:
+            frame = frame_queue.get()
+            if frame is None:
+                break
+            renderer.update_video_feed_preview(frame)
+            position = self.localize(frame)
+            if position is not None:
+                renderer.update_target_position(position)
+
     def retrieve_top1_index_from_frame(self, frame_bgr):
         pil_image = Image.fromarray(cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB))
         query_tensor = self.preprocess(pil_image).unsqueeze(0).to(self.device)
@@ -139,7 +149,7 @@ class Localizer:
 
         distance_from_prediction = np.linalg.norm(candidate_position - predicted_position)
         if distance_from_prediction > self.max_distance_between_positions:
-            print(f"Measurement gated out: distance {distance_from_prediction * self.colmap_to_real_world_scale} > max {self.max_distance_between_positions:.3f * self.colmap_to_real_world_scale:.3f} meters")
+            print(f"Prediction too far: distance {distance_from_prediction * self.colmap_to_real_world_scale} > max ({self.max_distance_between_positions * self.colmap_to_real_world_scale} meters)")
             return self.kalman_filter.x[:3].copy()
 
         self.last_accepted_time = current_time

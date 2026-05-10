@@ -27,20 +27,21 @@ class WebcamCapture:
                 break
         return success, frame
 
-    def frames(self):
+    def run(self, frame_queue):
         try:
             while True:
                 frame_start = time.monotonic()
                 success, frame = self.read_latest_frame()
                 if not success:
                     break
-                yield frame
+                frame_queue.put(frame)
                 elapsed = time.monotonic() - frame_start
                 sleep_duration = self.capture_interval - elapsed
                 if sleep_duration > 0:
                     time.sleep(sleep_duration)
         finally:
             self.capture.release()
+            frame_queue.put(None)
 
 
 class SimulationCapture:
@@ -77,11 +78,7 @@ class SimulationCapture:
             frame_queue.put(None)
             video_capture.release()
 
-    def frames(self):
-        frame_queue = queue.Queue(maxsize=2)
-        threading.Thread(target=self.producer, args=(frame_queue,), daemon=True).start()
-        while True:
-            frame = frame_queue.get()
-            if frame is None:
-                break
-            yield frame
+    def run(self, frame_queue):
+        simulation_producer_thread = threading.Thread(target=self.producer, args=(frame_queue,), daemon=True)
+        simulation_producer_thread.start()
+        simulation_producer_thread.join()

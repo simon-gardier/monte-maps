@@ -133,7 +133,7 @@ class Renderer:
                 self.is_localization_paused.set()
                 play_pause_button.label = "⏯️ Pause"
 
-    def run_render_loop(self):
+    def run(self):
         current_display_position = np.array([0.0, 0.0, 0.0])
         while True:
             start = time.monotonic()

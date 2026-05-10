@@ -1,17 +1,10 @@
 import argparse
+import queue
 import threading
 
 from localization.localization import Localizer
 from capture.capture import WebcamCapture, SimulationCapture
 from rendering.renderer import Renderer
-
-
-def localization_thread_target(frame_generator, localizer: Localizer, renderer: Renderer):
-    for frame in frame_generator:
-        renderer.update_video_feed_preview(frame)
-        position = localizer.localize(frame)
-        if position is not None:
-            renderer.update_target_position(position)
 
 
 def main():
@@ -20,21 +13,23 @@ def main():
     args = parser.parse_args()
 
     renderer = Renderer()
+    localizer = Localizer()
+    frame_queue = queue.Queue(maxsize=2)
 
     if args.mode == "webcam":
-        frame_generator = WebcamCapture().frames()
+        capture = WebcamCapture()
     else:
-        frame_generator = SimulationCapture(paused_event=renderer.is_localization_paused).frames()
+        capture = SimulationCapture(paused_event=renderer.is_localization_paused)
 
-    localizer = Localizer()
-    localization_thread = threading.Thread(
-        target=localization_thread_target,
-        args=(frame_generator, localizer, renderer),
-        daemon=True,
-    )
+    capture_thread = threading.Thread(target=capture.run, args=(frame_queue,), daemon=True)
+    localization_thread = threading.Thread(target=localizer.run, args=(frame_queue, renderer), daemon=True)
+    renderer_thread = threading.Thread(target=renderer.run, daemon=True)
+
+    capture_thread.start()
     localization_thread.start()
+    renderer_thread.start()
 
-    renderer.run_render_loop()
+    renderer_thread.join()
 
 
 if __name__ == "__main__":

@@ -58,8 +58,8 @@ Download the MegaLoc weights with `hf download gberton/MegaLoc model.safetensors
 
 ## Real Time localization
 From the project root:
-- For simulation mode (requires a mp4 video), run `python src/indoor-map/main.py --mode simulation`
-- For webcam mode, run `python src/indoor-map/main.py --mode webcam`
+- For simulation mode (requires a mp4 video), run `python src/monte-maps/main.py --mode simulation`
+- For webcam mode, run `python src/monte-maps/main.py --mode webcam`
 
 ## Credits
 - [Lei Yang](https://www.linkedin.com/in/lei-yang-05a37b26b/)

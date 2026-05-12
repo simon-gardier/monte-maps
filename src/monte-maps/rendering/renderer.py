@@ -53,7 +53,7 @@ class Renderer:
         )
         self.server.scene.set_up_direction("-y")
         self.server.scene.add_point_cloud(
-            "/building", points=point_cloud_positions, colors=point_cloud_colors, point_shape="circle", point_size=0.001
+            "/building", points=point_cloud_positions, colors=point_cloud_colors, point_shape="circle", point_size=0.002
         )
 
         with open(points_of_interest_path) as points_of_interest_file:
@@ -82,7 +82,8 @@ class Renderer:
         self.shared_target_position = None
         self.position_lock = threading.Lock()
         self.is_localization_paused = threading.Event()
-        self.is_localization_paused.clear() # starts in paused state
+        self.is_localization_paused.clear()
+        self.reset_localization_event = threading.Event()
 
         placeholder_image = np.zeros((int(PREVIEW_WIDTH * 9 / 16), PREVIEW_WIDTH, 3), dtype=np.uint8)
         self.preview_image_handle = self.server.gui.add_image(placeholder_image, label="Video feed")
@@ -135,15 +136,22 @@ class Renderer:
     def on_client_connect(self, client: viser.ClientHandle):
         self.client = client
         play_pause_button = client.gui.add_button("⏯️ Start")
+        reset_state_button = client.gui.add_button("🔄 Reset state", disabled=True)
 
         @play_pause_button.on_click
         def _(_):
             if self.is_localization_paused.is_set():
                 self.is_localization_paused.clear()
                 play_pause_button.label = "⏯️ Resume"
+                reset_state_button.disabled = False
             else:
                 self.is_localization_paused.set()
                 play_pause_button.label = "⏯️ Pause"
+                reset_state_button.disabled = True
+
+        @reset_state_button.on_click
+        def _(_):
+            self.reset_localization_event.set()
 
         self.go_to_position_button = client.gui.add_button("Show location", disabled=not self.position_marker_initialized)
 

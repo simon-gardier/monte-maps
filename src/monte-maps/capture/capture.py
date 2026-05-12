@@ -1,7 +1,6 @@
 import cv2
 import time
 import queue
-import threading
 from dotenv import load_dotenv
 import os
 import sys
@@ -13,15 +12,17 @@ SIMULATION_VIDEO_PATH = os.getenv("SIMULATION_VIDEO_PATH", "")
 
 
 class WebcamCapture:
-    def __init__(self, device_index = 0):
-        self.capture = cv2.VideoCapture(device_index)
+    def __init__(self, device_index, paused_event):
+        self.capture = cv2.VideoCapture(device_index, cv2.CAP_DSHOW)
         if not self.capture.isOpened():
             sys.exit("Cannot open webcam")
         self.capture_interval = 1.0 / CAPTURE_FPS
+        self.paused_event = paused_event
 
     def read_latest_frame(self):
         success, frame = False, None
-        for _ in range(int(self.capture.get(cv2.CAP_PROP_BUFFERSIZE)) or 1):
+        buf_size = max(1, int(self.capture.get(cv2.CAP_PROP_BUFFERSIZE)))
+        for _ in range(buf_size):
             success, frame = self.capture.read()
             if not success:
                 break
@@ -30,6 +31,8 @@ class WebcamCapture:
     def run(self, frame_queue):
         try:
             while True:
+                if not self.paused_event.is_set():
+                    self.paused_event.wait()
                 frame_start = time.monotonic()
                 success, frame = self.read_latest_frame()
                 if not success:
@@ -79,6 +82,4 @@ class SimulationCapture:
             video_capture.release()
 
     def run(self, frame_queue):
-        simulation_producer_thread = threading.Thread(target=self.producer, args=(frame_queue,), daemon=True)
-        simulation_producer_thread.start()
-        simulation_producer_thread.join()
+        self.producer(frame_queue)
